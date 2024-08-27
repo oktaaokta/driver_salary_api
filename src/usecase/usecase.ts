@@ -1,4 +1,5 @@
 import { getDriverSalaryFromDB } from '../repository/repository';
+import { getDriverSalaryByDriverCodeFromDB } from '../repository/repository';
 import { getPaidShipmentsFromDB } from '../repository/repository';
 import { getConfirmedShipmentsFromDB } from '../repository/repository';
 import { getPendingShipmentsFromDB } from '../repository/repository';
@@ -7,8 +8,18 @@ import { DriverInfo } from '../entities/handler_types';
 
 export async function fetchDriverSalary(params: GetDriverSalaryParam): Promise<DriverInfo[]> {
     try {
-        const salaries = await getDriverSalaryFromDB(params.month, params.year);
+        var salaries;
+        if (params.driver_code == undefined) {
+            salaries = await getDriverSalaryFromDB(params.month, params.year);
+        } else {
+            salaries = await getDriverSalaryByDriverCodeFromDB(params.month, params.year, params.driver_code);
+        }
+
         const driverInfoArray: DriverInfo[] = [];
+        if (!salaries) {
+            return driverInfoArray
+        }
+
         for (const row of salaries.rows) {
             const driverInfo = row as DriverInfo; 
             var totalShipments : number = 0
