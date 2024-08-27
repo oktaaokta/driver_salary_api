@@ -1,0 +1,19 @@
+version: '3.8'
+
+volumes:
+  elasticsearch_data: {}
+  nsqd_data: {}
+  postgres_data: {}
+
+services:
+  postgres:
+    container_name: postgres-seryu
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=db-seryu
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
