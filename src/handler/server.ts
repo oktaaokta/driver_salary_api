@@ -27,9 +27,13 @@ app.get('/v1/salary/driver/list', async (req: Request<{}, {}, {}, GetDriverSalar
       message: 'Success',
       data:[]
     };
+
+    var totalRow = 0
     response.forEach(driver => {
         responseJson.data.push(driver)
+        totalRow+=1
     });
+    responseJson.total_row = totalRow
   
     res.send(responseJson);
   } catch (error) {
