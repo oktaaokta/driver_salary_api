@@ -31,6 +31,8 @@ app.get('/v1/salary/driver/list', async (req: Request<{}, {}, {}, GetDriverSalar
         totalRow+=1
     });
     responseJson.total_row = totalRow
+    responseJson.current = Number(params.current)
+    responseJson.page_size = Number(params.page_size)
   
     res.send(responseJson);
   } catch (error) {
