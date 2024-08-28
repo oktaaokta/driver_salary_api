@@ -1,4 +1,5 @@
 import { Client } from 'pg';
+import { DriverShipment } from '../entities/repository_types';
 
 const client = new Client({
     user: 'user',
@@ -7,11 +8,6 @@ const client = new Client({
     password: 'password',
     port: 5432,
 });
-
-interface DriverShipment {
-    total_costs: number,
-    total_shipments: number,
-}
 
 // Connect to the database
 client.connect()

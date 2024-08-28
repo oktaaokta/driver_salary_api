@@ -24,7 +24,6 @@ app.get('/v1/salary/driver/list', async (req: Request<{}, {}, {}, GetDriverSalar
 
     const response = await fetchDriverSalary(params);
     const responseJson: { [key: string]: any } = {
-      message: 'Success',
       data:[]
     };
 
