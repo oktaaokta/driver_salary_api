@@ -1,9 +1,9 @@
 export interface GetDriverSalaryRepositoryParam {
-    Month?: number;   
-    Year?: number;    
-    Current?: number;
-    PageSize?: number;
-    DriverCode?: string;
-    Status?: string;
-    Name?: string;
+    month?: number;   
+    year?: number;    
+    current?: number;
+    pageSize?: number;
+    driverCode?: string;
+    status?: string;
+    name?: string;
   }

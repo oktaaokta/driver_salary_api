@@ -1,13 +1,23 @@
 import { getDriverSalaryFromDB, getDriverSalaryByDriverCodeFromDB,getPaidShipmentsFromDB, getConfirmedShipmentsFromDB , getPendingShipmentsFromDB } from '../repository/repository';
 import { GetDriverSalaryParam, DriverInfo } from '../entities/handler_types';
+import { GetDriverSalaryRepositoryParam } from '../entities/usecase_types';
 
 export async function fetchDriverSalary(params: GetDriverSalaryParam): Promise<DriverInfo[]> {
     try {
         var salaries;
-        if (params.driver_code == '') {
-            salaries = await getDriverSalaryFromDB(params.month, params.year);
+        const getDriverSalaryParam :GetDriverSalaryRepositoryParam = {
+            month: params.month,
+            year: params.year,
+            current: params.current,
+            pageSize: params.page_size,
+            driverCode: params.driver_code,
+            status: params.status,
+            name: params.name,
+        } 
+        if (params.driver_code == undefined) {
+            salaries = await getDriverSalaryFromDB(getDriverSalaryParam);
         } else {
-            salaries = await getDriverSalaryByDriverCodeFromDB(params.month, params.year, params.driver_code);
+            salaries = await getDriverSalaryByDriverCodeFromDB(getDriverSalaryParam);
         }
 
         const driverInfoArray: DriverInfo[] = [];

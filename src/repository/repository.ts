@@ -1,5 +1,6 @@
 import { Client } from 'pg';
 import { DriverShipment } from '../entities/repository_types';
+import { GetDriverSalaryRepositoryParam } from '../entities/usecase_types';
 
 const client = new Client({
     user: 'user',
@@ -14,10 +15,10 @@ client.connect()
     .then(() => console.log('Connected to the database'))
     .catch(err => console.error('Connection error', err.stack));
 
-export async function getDriverSalaryFromDB(month: number, year: number): Promise<any> {
+export async function getDriverSalaryFromDB(param: GetDriverSalaryRepositoryParam): Promise<any> {
     const query = 'SELECT d.name , da.driver_code , COUNT(da.driver_code) * vc.value AS total_attendance_salary FROM driver_attendances da JOIN drivers d ON da.driver_code = d.driver_code  CROSS JOIN variable_configs vc WHERE da.attendance_status = true and EXTRACT(MONTH FROM attendance_date) = $1 and EXTRACT(year from attendance_date) = $2 GROUP BY d.name,da.driver_code, vc.value HAVING COUNT(da.driver_code) * vc.value > 0';
     try {
-        const res = await client.query(query, [month, year]);
+        const res = await client.query(query, [param.month, param.year]);
         if (res.rows.length === 0) {
             return null;
         }
@@ -28,10 +29,10 @@ export async function getDriverSalaryFromDB(month: number, year: number): Promis
     }
 }
 
-export async function getDriverSalaryByDriverCodeFromDB(month: number, year: number, driverCode: string): Promise<any> {
+export async function getDriverSalaryByDriverCodeFromDB(param: GetDriverSalaryRepositoryParam): Promise<any> {
     const query = 'SELECT d.name , da.driver_code , COUNT(da.driver_code) * vc.value AS total_attendance_salary FROM driver_attendances da JOIN drivers d ON da.driver_code = d.driver_code  CROSS JOIN variable_configs vc WHERE da.attendance_status = true and EXTRACT(MONTH FROM attendance_date) = $1 and EXTRACT(year from attendance_date) = $2 and da.driver_code = $3 GROUP BY d.name,da.driver_code, vc.value HAVING COUNT(da.driver_code) * vc.value > 0';
     try {
-        const res = await client.query(query, [month, year, driverCode]);
+        const res = await client.query(query, [param.month, param.year, param.driverCode]);
         if (res.rows.length === 0) {
             return null;
         }
