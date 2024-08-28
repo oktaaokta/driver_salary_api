@@ -29,17 +29,26 @@ export async function fetchDriverSalary(params: GetDriverSalaryParam): Promise<D
         for (const row of salaries.rows) {
             const driverInfo = row as DriverInfo; 
             var totalShipments : number = 0
-            const paidInfo  = await getPaidShipmentsFromDB(driverInfo.driver_code, params.month, params.year)
-            const totalPaid : number = Number(paidInfo.total_costs)
-            totalShipments += Number(paidInfo.total_shipments)
+            var totalPaid : number = 0
+            var totalConfirmed : number = 0
+            var totalPending : number = 0
+            if (params.status == undefined || params.status == 'PAID') {
+                const paidInfo  = await getPaidShipmentsFromDB(driverInfo.driver_code, params.month, params.year)
+                totalPaid = Number(paidInfo.total_costs)
+                totalShipments += Number(paidInfo.total_shipments)
+            }
 
-            const pendingInfo  = await getPendingShipmentsFromDB(driverInfo.driver_code, params.month, params.year)
-            const totalPending : number = Number(pendingInfo.total_costs)
-            totalShipments += Number(paidInfo.total_shipments)
+            if (params.status == undefined || params.status == 'PENDING') {
+                const pendingInfo  = await getPendingShipmentsFromDB(driverInfo.driver_code, params.month, params.year)
+                totalPending = Number(pendingInfo.total_costs)
+                totalShipments += Number(pendingInfo.total_shipments)
+            }
 
-            const confirmedInfo = await getConfirmedShipmentsFromDB(driverInfo.driver_code, params.month, params.year)
-            const totalConfirmed : number = Number(confirmedInfo.total_costs)
-            totalShipments += Number(confirmedInfo.total_shipments)
+            if (params.status == undefined || params.status == 'CONFIRMED') {
+                const confirmedInfo = await getConfirmedShipmentsFromDB(driverInfo.driver_code, params.month, params.year)
+                totalConfirmed = Number(confirmedInfo.total_costs)
+                totalShipments += Number(confirmedInfo.total_shipments)
+            }
 
             const totalAttendanceSalary : number = Number(driverInfo.total_attendance_salary)
             const totalSalary : number =  totalPaid + totalPending + totalConfirmed + totalAttendanceSalary
