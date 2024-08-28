@@ -1,4 +1,4 @@
-import { getDriverSalaryFromDB, getDriverSalaryByDriverCodeFromDB,getPaidShipmentsFromDB, getConfirmedShipmentsFromDB , getPendingShipmentsFromDB } from '../repository/repository';
+import { getDriverSalaryFromDB, getDriverSalaryByDriverCodeFromDB, getDriverSalaryByDriverNameFromDB, getPaidShipmentsFromDB, getConfirmedShipmentsFromDB , getPendingShipmentsFromDB } from '../repository/repository';
 import { GetDriverSalaryParam, DriverInfo } from '../entities/handler_types';
 import { GetDriverSalaryRepositoryParam } from '../entities/usecase_types';
 
@@ -14,10 +14,12 @@ export async function fetchDriverSalary(params: GetDriverSalaryParam): Promise<D
             status: params.status,
             name: params.name,
         } 
-        if (params.driver_code == undefined) {
-            salaries = await getDriverSalaryFromDB(getDriverSalaryParam);
-        } else {
+        if (params.driver_code != undefined) {
             salaries = await getDriverSalaryByDriverCodeFromDB(getDriverSalaryParam);
+        } else if (params.name != undefined) {
+            salaries = await getDriverSalaryByDriverNameFromDB(getDriverSalaryParam);
+        }  else {
+            salaries = await getDriverSalaryFromDB(getDriverSalaryParam);
         }
 
         const driverInfoArray: DriverInfo[] = [];
