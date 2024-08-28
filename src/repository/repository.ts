@@ -16,7 +16,7 @@ client.connect()
     .catch(err => console.error('Connection error', err.stack));
 
 export async function getDriverSalaryFromDB(param: GetDriverSalaryRepositoryParam): Promise<any> {
-    const query = 'SELECT d.name , da.driver_code , COUNT(da.driver_code) * vc.value AS total_attendance_salary FROM driver_attendances da JOIN drivers d ON da.driver_code = d.driver_code  CROSS JOIN variable_configs vc WHERE da.attendance_status = true and EXTRACT(MONTH FROM attendance_date) = $1 and EXTRACT(year from attendance_date) = $2 GROUP BY d.name,da.driver_code, vc.value HAVING COUNT(da.driver_code) * vc.value > 0';
+    const query = 'SELECT d.name , da.driver_code , COUNT(da.driver_code) * vc.value AS total_attendance_salary FROM driver_attendances da JOIN drivers d ON da.driver_code = d.driver_code  CROSS JOIN variable_configs vc WHERE da.attendance_status = true and EXTRACT(MONTH FROM attendance_date) = $1 and EXTRACT(year from attendance_date) = $2  GROUP BY d.name,da.driver_code, vc.value  HAVING COUNT(da.driver_code) * vc.value > 0 ORDER BY da.driver_code';
     try {
         const res = await client.query(query, [param.month, param.year]);
         if (res.rows.length === 0) {
@@ -30,7 +30,7 @@ export async function getDriverSalaryFromDB(param: GetDriverSalaryRepositoryPara
 }
 
 export async function getDriverSalaryByDriverCodeFromDB(param: GetDriverSalaryRepositoryParam): Promise<any> {
-    const query = 'SELECT d.name , da.driver_code , COUNT(da.driver_code) * vc.value AS total_attendance_salary FROM driver_attendances da JOIN drivers d ON da.driver_code = d.driver_code  CROSS JOIN variable_configs vc WHERE da.attendance_status = true and EXTRACT(MONTH FROM attendance_date) = $1 and EXTRACT(year from attendance_date) = $2 and da.driver_code = $3 GROUP BY d.name,da.driver_code, vc.value HAVING COUNT(da.driver_code) * vc.value > 0';
+    const query = 'SELECT d.name , da.driver_code , COUNT(da.driver_code) * vc.value AS total_attendance_salary FROM driver_attendances da JOIN drivers d ON da.driver_code = d.driver_code  CROSS JOIN variable_configs vc WHERE da.attendance_status = true and EXTRACT(MONTH FROM attendance_date) = $1 and EXTRACT(year from attendance_date) = $2 and da.driver_code = $3 GROUP BY d.name,da.driver_code, vc.value HAVING COUNT(da.driver_code) * vc.value > 0 ORDER BY da.driver_code';
     try {
         const res = await client.query(query, [param.month, param.year, param.driverCode]);
         if (res.rows.length === 0) {
