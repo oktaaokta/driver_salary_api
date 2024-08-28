@@ -1,8 +1,6 @@
 import express, { Request, Response } from 'express';
 import { fetchDriverSalary } from '../usecase/usecase';
 import { GetDriverSalaryParam } from '../entities/handler_types';
-import { ParsedQs } from 'qs';
-import { parseArgs } from 'util';
 
 const app = express();
 const port = 8000;
