@@ -32,26 +32,29 @@ export async function fetchDriverSalary(params: GetDriverSalaryParam): Promise<D
             var totalPaid : number = 0
             var totalConfirmed : number = 0
             var totalPending : number = 0
+            var totalSalary : number = 0
             if (params.status == undefined || params.status == 'PAID') {
                 const paidInfo  = await getPaidShipmentsFromDB(driverInfo.driver_code, params.month, params.year)
                 totalPaid = Number(paidInfo.total_costs)
                 totalShipments += Number(paidInfo.total_shipments)
+                totalSalary += totalPaid
             }
 
             if (params.status == undefined || params.status == 'PENDING') {
                 const pendingInfo  = await getPendingShipmentsFromDB(driverInfo.driver_code, params.month, params.year)
                 totalPending = Number(pendingInfo.total_costs)
                 totalShipments += Number(pendingInfo.total_shipments)
+                totalSalary += totalPending
             }
 
             if (params.status == undefined || params.status == 'CONFIRMED') {
                 const confirmedInfo = await getConfirmedShipmentsFromDB(driverInfo.driver_code, params.month, params.year)
                 totalConfirmed = Number(confirmedInfo.total_costs)
                 totalShipments += Number(confirmedInfo.total_shipments)
+                totalSalary += totalConfirmed
             }
 
-            const totalAttendanceSalary : number = Number(driverInfo.total_attendance_salary)
-            const totalSalary : number =  totalPaid + totalPending + totalConfirmed + totalAttendanceSalary
+            totalSalary += Number(driverInfo.total_attendance_salary)
             driverInfo.total_paid = totalPaid
             driverInfo.total_pending = totalPending
             driverInfo.total_confirmed = totalConfirmed
